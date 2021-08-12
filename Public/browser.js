@@ -7,21 +7,12 @@ window.onload = () => {
 	button.addEventListener("click", async (e) => {
 		const URL = document.getElementsByTagName("input")[0].value;
 
-		// send link to server and get back shortened link
+		// send link to server and get back a shortened link
 		const data = { URL };
 
-		const returnedData = await fetch(`${server}/post_link`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(data),
-		})
-			.then((res) => res.json())
-			.catch((error) => {
-				console.error("Error:", error);
-			});
+		const returnedData = await insertURL(data);
 
+		// check if insertion was possible
 		if (returnedData) {
 			span.innerText = `Shortened link: ${window.location.href}url/${returnedData.hash}`;
 		} else {
@@ -29,3 +20,17 @@ window.onload = () => {
 		}
 	});
 };
+
+async function insertURL(data) {
+	return await fetch(`${server}/post_link`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	})
+		.then((res) => res.json())
+		.catch((error) => {
+			console.error("Error:", error);
+		});
+}
