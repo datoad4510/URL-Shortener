@@ -8,7 +8,7 @@ window.onload = () => {
 		const URL = document.getElementsByTagName("input")[0].value;
 
 		// send link to server and get back shortened link
-		const data = { URL: URL };
+		const data = { URL };
 
 		const returnedData = await fetch(`${server}/post_link`, {
 			method: "POST",

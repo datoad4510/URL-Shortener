@@ -18,37 +18,35 @@ app.use(express.static("Public"));
 app.get("/", (req, res) => {});
 
 app.post("/post_link", async (req, res) => {
-	const URL = req.body.URL;
-
 	try {
-		let dbResponse;
+		const URL = req.body.URL;
 
 		if (isValidLink(URL)) {
-			dbResponse = await db.insertUrlIfNotExists(URL);
+			let dbResponse = await db.insertUrlIfNotExists(URL);
+			res.send(dbResponse);
+		} else {
+			// send undefined
+			res.send();
 		}
-
-		res.send(dbResponse);
 	} catch (error) {
 		console.log(error);
-		res.status(404);
+		res.status(404).send("Error");
 	}
 });
 
 app.get("/url/:hash", async (req, res) => {
-	let document;
 	try {
-		document = await db.findByHash(req.params.hash);
-	} catch (error) {
-		// do nothing if invalid id. document will stay undefined
-		console.log(error);
-	}
+		let document = await db.findByHash(req.params.hash);
 
-	// if document exists
-	if (document) {
-		const link = document.URL;
-		res.redirect(link);
-	} else {
-		res.status(404).send("Invalid request");
+		// if document exists
+		if (document) {
+			const link = document.URL;
+			res.redirect(link);
+		} else {
+			res.status(404).send("Invalid request");
+		}
+	} catch (error) {
+		console.log(error);
 	}
 });
 

@@ -26,8 +26,8 @@ class Database {
 
 	async insertUrlIfNotExists(URL) {
 		return await this.URL_collection.findOneAndUpdate(
-			{ URL: URL },
-			{ $setOnInsert: { URL: URL, hash: nanoid() } },
+			{ URL },
+			{ $setOnInsert: { URL, hash: nanoid() } },
 			{
 				upsert: true,
 				returnDocument: "after",
@@ -38,7 +38,7 @@ class Database {
 	async findByHash(hash) {
 		console.log(hash);
 		return await this.URL_collection.findOne({
-			hash: hash,
+			hash,
 		});
 	}
 
