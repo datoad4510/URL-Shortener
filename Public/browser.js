@@ -22,6 +22,10 @@ window.onload = () => {
 				console.error("Error:", error);
 			});
 
-		span.innerText = `Shortened link: ${window.location.href}${returnedData._id}`;
+		if (returnedData) {
+			span.innerText = `Shortened link: ${window.location.href}url/${returnedData.hash}`;
+		} else {
+			span.innerText = "Invalid link!";
+		}
 	});
 };

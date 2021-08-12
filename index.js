@@ -1,88 +1,46 @@
-const result = require("dotenv").config();
-
-if (result.error) {
-	throw result.error;
-}
-
-var validUrl = require("valid-url");
-
-const path = require("path");
-const bodyParser = require("body-parser");
-
-const { urlencoded } = require("express");
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
-const username = process.env.UNAME;
-const password = process.env.PWORD;
 
 // const cors = require("cors");
-// app.use(cors());
+const bodyParser = require("body-parser");
 
+const isValidLink = require("./Javascript/helpers");
+const credentials = require("./Javascript/credentials");
+const Database = require("./Javascript/db");
+
+const db = new Database();
+
+// middlewares
+// app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static("Public"));
-
-const { MongoClient, ObjectId } = require("mongodb");
-const uri = `mongodb+srv://${username}:${password}@cluster0.tnsni.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
-
-async function insertIfNotExists(URL) {
-	return await client
-		.db("database")
-		.collection("URLs")
-		.findOneAndUpdate(
-			{ URL: URL },
-			{ $setOnInsert: { URL: URL } },
-			{
-				upsert: true,
-				returnDocument: "after",
-			}
-		)
-		.then((data) => data.value);
-}
-
-client.connect(async (err) => {
-	console.log("Connected to MongoDB Atlas!");
-});
 
 app.get("/", (req, res) => {});
 
 app.post("/post_link", async (req, res) => {
 	const URL = req.body.URL;
 
-	let dbResponse;
 	try {
-		const isValidUrl =
-			typeof validUrl.isHttpUri(URL) !== "undefined" ||
-			typeof validUrl.isHttpsUri(URL) !== "undefined";
+		let dbResponse;
 
-		if (isValidUrl) {
-			dbResponse = await insertIfNotExists(URL);
+		if (isValidLink(URL)) {
+			dbResponse = await db.insertUrlIfNotExists(URL);
 		}
+
+		res.send(dbResponse);
 	} catch (error) {
 		console.log(error);
+		res.status(404);
 	}
-
-	res.send(dbResponse);
 });
 
-app.get("/:_id", async (req, res) => {
-	const database = client.db("database");
-	const collection = database.collection("URLs");
-
-	let id;
+app.get("/url/:hash", async (req, res) => {
 	let document;
-
 	try {
-		id = ObjectId(req.params._id);
-		document = await collection.findOne({
-			_id: id,
-		});
+		document = await db.findByHash(req.params.hash);
 	} catch (error) {
 		// do nothing if invalid id. document will stay undefined
+		console.log(error);
 	}
 
 	// if document exists
@@ -90,10 +48,11 @@ app.get("/:_id", async (req, res) => {
 		const link = document.URL;
 		res.redirect(link);
 	} else {
-		res.send("Invalid link!");
+		res.status(404).send("Invalid request");
 	}
 });
 
-app.listen(port, () => {
-	console.log(`Example app listening at http://localhost:${port}`);
+app.listen(credentials.port, async () => {
+	console.log(`App listening at http://localhost:${credentials.port}`);
+	await db.connect();
 });
