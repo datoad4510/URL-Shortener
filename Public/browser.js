@@ -10,9 +10,9 @@ window.onload = () => {
 		// send link to server and get back a shortened link
 		const data = { URL };
 
-		const returnedData = await insertURL(data);
+		const returnedData = await sendLink(data);
 
-		// check if insertion was possible
+		// check if link was valid
 		if (returnedData) {
 			span.innerText = `Shortened link: ${window.location.href}url/${returnedData.hash}`;
 		} else {
@@ -21,7 +21,7 @@ window.onload = () => {
 	});
 };
 
-async function insertURL(data) {
+async function sendLink(data) {
 	return await fetch(`${server}/post_link`, {
 		method: "POST",
 		headers: {
