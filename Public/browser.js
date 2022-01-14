@@ -1,5 +1,5 @@
 // const server = "http://localhost:3000";
-const server = "https://url-shortener-2332.herokuapp.com/";
+const server = "https://url-shortener-2332.herokuapp.com";
 
 function copyToClipboard(text) {
 	navigator.clipboard.writeText(text).catch((err) => {
