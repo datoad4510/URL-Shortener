@@ -1,3 +1,71 @@
-span {
-    color: red;
+html {
+	font-family: cursive;
+}
+
+body {
+	background-color: rgb(10, 63, 60);
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: rgb(5, 71, 71);
+	box-shadow: 5px 0px 10px rgb(48, 46, 46);
+	width: 50%;
+	margin: 0 auto;
+	margin-top: 10vh;
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+input {
+	margin-bottom: 20px;
+	border-radius: 30px;
+	padding: 8px;
+	font-size: 14px;
+	width: 50%;
+	min-width: 100px;
+}
+
+input:focus {
+	outline: none;
+	border: 1px solid rgb(56, 90, 6);
+}
+
+.submit-button,
+.copy-button {
+	background-color: rgb(5, 71, 71);
+	border-radius: 30px;
+	color: white;
+	font-size: 20px;
+	padding: 10px;
+	width: 100%;
+	margin-top: 20px;
+	border: none;
+	cursor: pointer;
+	transition: all 0.3s ease-out;
+}
+
+.submit-button:hover,
+.copy-button:hover {
+	background-color: rgb(5, 71, 71);
+	color: rgb(152, 160, 36);
+}
+
+.error {
+	color: rgb(207, 29, 74);
+	font-size: 20px;
+	margin-top: 20px;
+}
+
+.link {
+	margin-top: 20px;
+	display: block;
+	width: 80%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: white;
+	text-align: center;
 }

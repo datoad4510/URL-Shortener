@@ -19,8 +19,12 @@ class Database {
 
 	async connect() {
 		return await this.client.connect(async (err) => {
-			console.log("Connected to MongoDB Atlas!");
-			this.URL_collection = this.client.db("database").collection("URLs");
+			if (err) {
+				console.log(err);
+			} else {
+				console.log("Connected to MongoDB Atlas!");
+				this.URL_collection = this.client.db("database").collection("URLs");
+			}
 		});
 	}
 
@@ -32,7 +36,9 @@ class Database {
 				upsert: true,
 				returnDocument: "after",
 			}
-		).then((data) => data.value);
+		)
+			.then((data) => data.value)
+			.catch((err) => console.log(err));
 	}
 
 	async findByHash(hash) {
